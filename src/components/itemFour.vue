@@ -45,32 +45,15 @@ const initChart = () => {
             }
         }
 
-        // 定义类别颜色 - 关键修复：明确指定每个类别的样式
+        // 类别颜色（保留但不直接使用）
         const categories = [
-            {
-                name: '水文要素',
-                itemStyle: {
-                    color: '#ff6b6b'  // 红色
-                }
-            },
-            {
-                name: '动力要素',
-                itemStyle: {
-                    color: '#4dabf7'  // 蓝色
-                }
-            },
-            {
-                name: '中尺度现象',
-                itemStyle: {
-                    color: '#ae3ec9'  // 紫色
-                }
-            }
+            { name: '水文要素', itemStyle: { color: '#C46B2F' } },
+            { name: '动力要素', itemStyle: { color: '#0F5A9E' } },
+            { name: '中尺度现象', itemStyle: { color: '#551A8B' } }
         ]
 
         myChart.setOption({
             title: {
-                text: '海洋要素关联强度分析',
-               // subtext: '节点大小=要素权重 | 连线粗细=关系强度',
                 left: 'center',
                 top: 5,
                 textStyle: {
@@ -86,15 +69,19 @@ const initChart = () => {
             series: [{
                 type: 'graph',
                 layout: 'force',
-                categories: categories,  // 在这里定义categories
+                categories: categories,
+                draggable: true,
                 data: [
                     { 
                         name: '温度', 
-                        category: 0,  // 对应水文要素 (索引0)
+                        category: 0,
                         value: weightData.nodes['温度'],
                         symbolSize: 40 + weightData.nodes['温度'] * 40,
                         itemStyle: {
-                            color: '#ff6b6b'  // 直接指定颜色确保显示
+                            color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                { offset: 0, color: 'rgba(196,107,47,1)' },    // 中心深橙，不透明
+                                { offset: 1, color: 'rgba(196,107,47,0.2)' }   // 边缘浅橙，半透明
+                            ])
                         },
                         label: {
                             show: true,
@@ -103,11 +90,14 @@ const initChart = () => {
                     },
                     { 
                         name: '盐度', 
-                        category: 0,  // 对应水文要素 (索引0)
+                        category: 0,
                         value: weightData.nodes['盐度'],
                         symbolSize: 40 + weightData.nodes['盐度'] * 40,
                         itemStyle: {
-                            color: '#ff6b6b'
+                            color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                { offset: 0, color: 'rgba(15,90,158,1)' },    // 中心深蓝
+                                { offset: 1, color: 'rgba(15,90,158,0.2)' }   // 边缘浅蓝
+                            ])
                         },
                         label: {
                             show: true,
@@ -116,11 +106,14 @@ const initChart = () => {
                     },
                     { 
                         name: '流速', 
-                        category: 1,  // 对应动力要素 (索引1)
+                        category: 1,
                         value: weightData.nodes['流速'],
                         symbolSize: 40 + weightData.nodes['流速'] * 40,
                         itemStyle: {
-                            color: '#4dabf7'
+                            color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                { offset: 0, color: 'rgba(31,139,31,1)' },    // 中心深绿
+                                { offset: 1, color: 'rgba(31,139,31,0.2)' }   // 边缘浅绿
+                            ])
                         },
                         label: {
                             show: true,
@@ -129,11 +122,14 @@ const initChart = () => {
                     },
                     { 
                         name: '风速', 
-                        category: 1,  // 对应动力要素 (索引1)
+                        category: 1,
                         value: weightData.nodes['风速'],
                         symbolSize: 40 + weightData.nodes['风速'] * 40,
                         itemStyle: {
-                            color: '#4dabf7'
+                            color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                { offset: 0, color: 'rgba(201,164,0,1)' },    // 中心深金
+                                { offset: 1, color: 'rgba(201,164,0,0.2)' }   // 边缘浅金
+                            ])
                         },
                         label: {
                             show: true,
@@ -142,11 +138,14 @@ const initChart = () => {
                     },
                     { 
                         name: '波高', 
-                        category: 1,  // 对应动力要素 (索引1)
+                        category: 1,
                         value: weightData.nodes['波高'],
                         symbolSize: 40 + weightData.nodes['波高'] * 40,
                         itemStyle: {
-                            color: '#4dabf7'
+                            color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                { offset: 0, color: 'rgba(39,155,143,1)' },   // 中心深青
+                                { offset: 1, color: 'rgba(39,155,143,0.2)' }  // 边缘浅青
+                            ])
                         },
                         label: {
                             show: true,
@@ -155,11 +154,14 @@ const initChart = () => {
                     },
                     { 
                         name: '涡旋', 
-                        category: 2,  // 对应中尺度现象 (索引2)
+                        category: 2,
                         value: weightData.nodes['涡旋'],
                         symbolSize: 40 + weightData.nodes['涡旋'] * 40,
                         itemStyle: {
-                            color: '#ae3ec9'
+                            color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
+                                { offset: 0, color: 'rgba(85,26,139,1)' },    // 中心深紫
+                                { offset: 1, color: 'rgba(85,26,139,0.2)' }   // 边缘浅紫
+                            ])
                         },
                         label: {
                             show: true,
@@ -174,7 +176,7 @@ const initChart = () => {
                         value: weightData.links['温度-盐度'],
                         lineStyle: {
                             width: weightData.links['温度-盐度'] * 5,
-                            color: '#ff6b6b',  // 使用源节点颜色
+                            color: '#C46B2F',
                             curveness: 0.2
                         },
                         label: {
@@ -190,7 +192,7 @@ const initChart = () => {
                         value: weightData.links['温度-流速'],
                         lineStyle: {
                             width: weightData.links['温度-流速'] * 5,
-                            color: '#ff6b6b',
+                            color: '#C46B2F',
                             curveness: 0.2
                         },
                         label: {
@@ -206,7 +208,7 @@ const initChart = () => {
                         value: weightData.links['盐度-流速'],
                         lineStyle: {
                             width: weightData.links['盐度-流速'] * 5,
-                            color: '#ff6b6b',
+                            color: '#0F5A9E',
                             curveness: 0.2
                         },
                         label: {
@@ -222,7 +224,7 @@ const initChart = () => {
                         value: weightData.links['风速-波高'],
                         lineStyle: {
                             width: weightData.links['风速-波高'] * 5,
-                            color: '#4dabf7',
+                            color: '#C9A400',
                             curveness: 0.2
                         },
                         label: {
@@ -238,7 +240,7 @@ const initChart = () => {
                         value: weightData.links['风速-流速'],
                         lineStyle: {
                             width: weightData.links['风速-流速'] * 5,
-                            color: '#4dabf7',
+                            color: '#C9A400',
                             curveness: 0.2
                         },
                         label: {
@@ -254,7 +256,7 @@ const initChart = () => {
                         value: weightData.links['流速-涡旋'],
                         lineStyle: {
                             width: weightData.links['流速-涡旋'] * 5,
-                            color: '#4dabf7',
+                            color: '#1F8B1F',
                             curveness: 0.2
                         },
                         label: {
@@ -266,14 +268,14 @@ const initChart = () => {
                     }
                 ],
                 force: {
-                    repulsion: 500,  // 节点斥力
-                    edgeLength: 200,  // 边的长度
+                    repulsion: 500,
+                    edgeLength: 200,
                     gravity: 0.1,
                     friction: 0.1
                 },
-                roam: true,  // 允许拖拽和缩放
+                roam: true,
                 focusNodeAdjacency: {
-                    show: true  // 悬停时高亮相邻节点和边
+                    show: true
                 },
                 edgeSymbol: ['none', 'arrow'],
                 edgeSymbolSize: [0, 8],
@@ -285,10 +287,15 @@ const initChart = () => {
                 },
                 label: {
                     show: true,
-                    position: 'bottom',
-                    offset: [0, 5],
+                    position: 'inside',
+                    offset: [0, 0],
                     color: '#fff',
-                    fontSize: 10
+                    fontSize: 12,
+                    fontFamily: 'PingFang SC, Microsoft YaHei, WenQuanYi Micro Hei, sans-serif',
+                    lineHeight: 15,
+                    fontWeight: 'bold',
+                    align: 'center',
+                    verticalAlign: 'middle'
                 },
                 emphasis: {
                     focus: 'adjacency',
@@ -297,7 +304,6 @@ const initChart = () => {
                     }
                 }
             }],
-            // 添加工具箱
             toolbox: {
                 show: true,
                 feature: {
@@ -311,7 +317,6 @@ const initChart = () => {
                     borderColor: '#fff'
                 }
             },
-            // 添加提示框
             tooltip: {
                 trigger: 'item',
                 formatter: function(params) {
@@ -324,7 +329,6 @@ const initChart = () => {
             }
         })
 
-        // 添加窗口大小变化监听
         window.addEventListener('resize', () => {
             if (myChart) myChart.resize()
         })
@@ -340,7 +344,6 @@ onMounted(() => {
             }
         }
         
-        // 使用 ResizeObserver 监听容器尺寸变化
         if (chartDom && chartDom.parentElement) {
             resizeObserver = new ResizeObserver((entries) => {
                 for (const entry of entries) {

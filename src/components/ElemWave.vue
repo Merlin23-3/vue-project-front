@@ -29,7 +29,6 @@ const initChart = () => {
         myChart = $echarts.init(chartDom)
         myChart.setOption({
             title: {
-              //  text: '波高季节变化',
                 left: 'center',
                 textStyle: { color: '#fff', fontSize: 12 }
             },
@@ -70,16 +69,21 @@ const initChart = () => {
             },
             series: [{
                 name: '有效波高',
-                type: 'bar',
+                type: 'line',  // 改为折线图
                 data: [1.2, 1.1, 1.3, 1.5, 1.8, 2.1, 2.5, 2.8, 2.3, 1.9, 1.5, 1.3],
+                lineStyle: {
+                    width: 3,
+                    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#E0FFFF' },  // 淡青
+                        { offset: 1, color: '#40E0D0' }   // 绿松石
+                    ])
+                },
                 itemStyle: {
                     color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#339af0' },
-                        { offset: 1, color: '#1864ab' }
-                    ]),
-                    borderRadius: [4, 4, 0, 0]
+                        { offset: 0, color: '#E0FFFF' },
+                        { offset: 1, color: '#40E0D0' }
+                    ])
                 },
-                barWidth: '50%',
                 label: {
                     show: true,
                     position: 'top',
@@ -89,6 +93,7 @@ const initChart = () => {
                         return params.value + 'm'
                     }
                 }
+                // barWidth 已移除（折线图不需要）
             }]
         })
         

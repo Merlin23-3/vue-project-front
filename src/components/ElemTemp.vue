@@ -29,7 +29,6 @@ const initChart = () => {
         myChart = $echarts.init(chartDom)
         myChart.setOption({
             title: {
-              //  text: '温度时空分布',
                 left: 'center',
                 textStyle: { color: '#fff', fontSize: 12 }
             },
@@ -82,32 +81,29 @@ const initChart = () => {
             },
             series: [{
                 name: '表层温度',
-                type: 'bar',
+                type: 'line',
                 data: [4.2, 3.8, 5.1, 8.3, 12.5, 16.8, 20.3, 22.1, 19.5, 15.2, 10.1, 6.2],
-                itemStyle: {
-                    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#ff6b6b' },
-                        { offset: 1, color: '#ffa726' }
-                    ]),
-                    borderRadius: [4, 4, 0, 0]
-                },
-                barWidth: '30%'
+                lineStyle: {
+                    width: 3,
+                    color: new $echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        { offset: 0, color: '#C69BFA' },  // 浅紫
+                        { offset: 1, color: '#552583' }   // 深紫
+                    ])
+                }
             }, {
                 name: '底层温度',
-                type: 'bar',
+                type: 'line',
                 data: [3.8, 3.5, 4.2, 6.1, 9.3, 12.5, 15.2, 16.8, 15.1, 12.3, 8.5, 5.1],
-                itemStyle: {
-                    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#4dabf7' },
-                        { offset: 1, color: '#1864ab' }
-                    ]),
-                    borderRadius: [4, 4, 0, 0]
-                },
-                barWidth: '30%'
+                lineStyle: {
+                    width: 3,
+                    color: new $echarts.graphic.LinearGradient(0, 1, 0, 0, [
+                        { offset: 0, color: '#FFE68F' },  // 浅金
+                        { offset: 1, color: '#FDB927' }   // 深金
+                    ])
+                }
             }]
         })
         
-        // 添加窗口大小变化的监听
         window.addEventListener('resize', handleResize)
     }
 }
@@ -118,7 +114,6 @@ const handleResize = () => {
     }
 }
 
-// ResizeObserver 监听容器尺寸变化
 let resizeObserver = null
 
 const observeContainer = () => {
@@ -127,7 +122,6 @@ const observeContainer = () => {
         resizeObserver = new ResizeObserver((entries) => {
             for (const entry of entries) {
                 const { width, height } = entry.contentRect
-                // 只有当容器尺寸大于 0 时才初始化或调整图表
                 if (width > 0 && height > 0) {
                     if (!myChart) {
                         initChart()
@@ -141,13 +135,11 @@ const observeContainer = () => {
     }
 }
 
-// 监听 chartId 变化
 watch(() => props.chartId, () => {
     setTimeout(initChart, 100)
 })
 
 onMounted(() => {
-    // 先尝试初始化，如果容器尺寸为 0，则使用 ResizeObserver 监听
     setTimeout(() => {
         const chartDom = document.getElementById(props.chartId)
         if (chartDom && chartDom.parentElement) {
@@ -183,11 +175,8 @@ onUnmounted(() => {
 h3 {
     color: #fff;
     text-align: center;
-    margin: 0 0 2px 0;
-    padding: 0;
-    font-size: 12px;
-    height: 18px;
-    line-height: 18px;
+    margin: 2px 0;
+    font-size: 14px;
     flex-shrink: 0;
 }
 

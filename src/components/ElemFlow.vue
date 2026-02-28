@@ -72,12 +72,12 @@ const initChart = () => {
                 type: 'bar',
                 data: [0.85, 1.20, 0.65, 1.05, 1.35],
                 itemStyle: {
-                    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#51cf66' },
-                        { offset: 1, color: '#2b8a3e' }
-                    ]),
-                    borderRadius: [4, 4, 0, 0]
-                },
+    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: '#90EE90' },  // 薄荷绿
+        { offset: 1, color:  '#32CD32' }   // 深绿松石
+    ]),
+    borderRadius: [4, 4, 0, 0]
+},
                 barWidth: '35%',
                 label: {
                     show: true,
@@ -93,12 +93,12 @@ const initChart = () => {
                 type: 'bar',
                 data: [0.45, 0.65, 0.35, 0.55, 0.75],
                 itemStyle: {
-                    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#20c997' },
-                        { offset: 1, color: '#0ca678' }
-                    ]),
-                    borderRadius: [4, 4, 0, 0]
-                },
+    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color:'#AFEEEE' },  // 深蓝
+        { offset: 1, color: '#20B2AA' }   // 近乎黑蓝
+    ]),
+    borderRadius: [4, 4, 0, 0]
+},
                 barWidth: '35%'
             }]
         })

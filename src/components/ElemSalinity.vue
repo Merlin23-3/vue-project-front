@@ -78,12 +78,12 @@ const initChart = () => {
                 type: 'bar',
                 data: [29.5, 31.2, 32.8, 33.5, 34.2],
                 itemStyle: {
-                    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#4dabf7' },
-                        { offset: 1, color: '#1864ab' }
-                    ]),
-                    borderRadius: [4, 4, 0, 0]
-                },
+    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: '#FF9A3C' },  // 亮橙
+        { offset: 1, color: '#C44536' }   // 砖红
+    ]),
+    borderRadius: [4, 4, 0, 0]
+},
                 barWidth: '40%',
                 label: {
                     show: true,

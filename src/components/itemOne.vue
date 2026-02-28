@@ -28,7 +28,7 @@ const initChart = () => {
    mychart.setOption({
     title: {
         // text: '涡旋数量分布',
-        text:"实时数据展示",
+       // text:"实时数据展示",
         left: 'center',
         textStyle: { color: '#fff', fontSize: 12 }
     },

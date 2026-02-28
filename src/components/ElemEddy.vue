@@ -71,13 +71,13 @@ const initChart = () => {
                 name: '气旋式涡旋',
                 type: 'bar',
                 data: [8, 15, 22, 28, 35],
-                itemStyle: {
-                    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: '#ae3ec9' },
-                        { offset: 1, color: '#7048e8' }
-                    ]),
-                    borderRadius: [4, 4, 0, 0]
-                },
+               itemStyle: {
+    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: '#FFB6C1' },  // 浅粉红
+        { offset: 1, color: '#FF69B4' }   // 热粉红
+    ]),
+    borderRadius: [4, 4, 0, 0]
+},
                 barWidth: '30%',
                 label: {
                     show: true,

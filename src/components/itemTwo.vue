@@ -29,12 +29,11 @@
             </div>
         </div>
 
-        <!-- 弹窗组件 -->
+        <!-- 弹窗组件（配色已调整） -->
         <teleport to="body">
             <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
                 <div class="modal-content" :class="{ 'modal-enter': showModal }">
                     <div class="modal-header">
-                        <h3>{{ currentChartName }} - 放大展示</h3>
                         <button class="close-btn" @click="closeModal">✕</button>
                     </div>
                     <div class="modal-body">
@@ -59,7 +58,7 @@
 </template>
 
 <script setup>
-import { ref, shallowRef, markRaw, computed } from 'vue';
+import { ref, shallowRef, markRaw } from 'vue';
 import ElemTemp from './ElemTemp.vue'
 import ElemSalinity from './ElemSalinity.vue'
 import ElemFlow from './ElemFlow.vue'
@@ -80,15 +79,14 @@ const chartMap = {
     wave: { component: ElemWave, name: '波高' },
     eddy: { component: ElemEddy, name: '涡旋' }
 }
-// 当前图表名称
-const currentChartName = computed(() => chartMap[currentChartId.value].name)
 
-// 切换图表
+// 切换图表（主视图）
 const handleSwitch = (chartId) => {
     currentChartId.value = chartId
     currentChart.value = markRaw(chartMap[chartId].component)
 }
-// 切换图表
+
+// 切换图表（弹窗视图）
 const handleModalSwitch = (chartId) => {
     currentChartId.value = chartId
     currentChart.value = markRaw(chartMap[chartId].component)
@@ -99,6 +97,7 @@ const openModal = () => {
     showModal.value = true
     document.body.style.overflow = 'hidden'
 }
+
 // 关闭弹窗
 const closeModal = () => {
     showModal.value = false
@@ -193,7 +192,7 @@ h2 {
     margin-top: 0;
 }
 
-/* 弹窗样式 */
+/* 弹窗样式 - 新配色 */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -201,7 +200,7 @@ h2 {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -210,41 +209,43 @@ h2 {
 }
 
 .modal-content {
-    width: 90vw;
-    height: 90vh;
-    background: #0a1a2a;
-    border: 2px solid #00f2fe;
+    width: 50vw;
+    height: 50vh;
+    background: #0A1F5C;        /* 深蓝色背景 */
+    border: 2px solid #00F7FF;   /* 亮蓝色边框 */
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
+    box-shadow: 0 0 30px rgba(0, 247, 255, 0.3);
     animation: slideIn 0.3s ease;
 }
 
 .modal-header {
     height: 50px;
     padding: 0 20px;
-    background: linear-gradient(90deg, #0a2a3a, #1a3a4a);
-    border-bottom: 1px solid #00f2fe;
+    background: #0047AB;        /* 中蓝色头部 */
+    border-bottom: 1px solid #00F7FF;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     flex-shrink: 0;
 }
 
-.modal-header h3 {
-    color: #00f2fe;
-    margin: 0;
-    font-size: 18px;
+.modal-footer {
+    height: 60px;
+    padding: 10px;
+    border-top: 1px solid #00F7FF;
+    background: #0047AB;
+    flex-shrink: 0;
 }
 
 .close-btn {
     width: 32px;
     height: 32px;
     background: transparent;
-    border: 1px solid #ff6b6b;
-    color: #ff6b6b;
+    border: 1px solid #00F7FF;
+    color: #00F7FF;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
@@ -255,8 +256,8 @@ h2 {
 }
 
 .close-btn:hover {
-    background: #ff6b6b;
-    color: #fff;
+    background: #00F7FF;
+    color: #0A1F5C;
 }
 
 .modal-body {
@@ -265,13 +266,6 @@ h2 {
     padding: 15px;
     height: calc(100% - 110px);
     box-sizing: border-box;
-}
-
-.modal-footer {
-    height: 60px;
-    padding: 10px;
-    border-top: 1px solid #00f2fe;
-    flex-shrink: 0;
 }
 
 .modal-chart {
@@ -357,5 +351,5 @@ h2 {
 .modal-body :deep(canvas) {
     width: 100% !important;
     height: 100% !important;
-}
+} 
 </style>

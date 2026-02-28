@@ -1,6 +1,6 @@
 <template>
 <div demo-bg>
-    <dv-border-box11 title="大数据可视化echarts" :title-width="400" :animate="false">
+    <dv-border-box11 title="海洋环境智能分析系统" :title-width="400" :animate="false">
       <div dv-bg>
         <div>
           <!--大容器-->
@@ -151,16 +151,16 @@ const toggleSidebars = () => {
 }
 </script>
 
-
 <style lang="less">
+// 引入科幻字体
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
 // 让外层容器占满整个视口
 [demo-bg] {
     height: 100vh;
     width: 100vw;
     overflow: hidden;
 }
-
-
 
 .container{
   min-width: 1200px;
@@ -260,12 +260,41 @@ const toggleSidebars = () => {
       width: 100%;
       height: 100%;
     }
-    
-
   }
 }
 
-// 调试样式
+// 科幻风格标题样式
+.dv-border-box11 {
+  :deep(.border-box-title) {
+    font-family: 'Orbitron', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    letter-spacing: 6px !important;
+    text-transform: uppercase !important;
+    background: linear-gradient(135deg, #00f2fe, #4dabf7, #a0e9ff, #00f2fe) !important;
+    background-size: 300% 300% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: 0 0 15px rgba(0, 242, 254, 0.8), 0 0 30px rgba(77, 171, 247, 0.6) !important;
+    animation: glowShift 4s ease infinite, flicker 3s infinite alternate;
+    transform: translateY(2px);
+  }
+}
+
+// 渐变流动动画
+@keyframes glowShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// 微光闪烁动画
+@keyframes flicker {
+  0% { opacity: 0.95; text-shadow: 0 0 15px #00f2fe, 0 0 25px #4dabf7; }
+  100% { opacity: 1; text-shadow: 0 0 25px #00f2fe, 0 0 40px #4dabf7, 0 0 60px #a0e9ff; }
+}
+
+// 调试样式（如需查看区域边界可取消注释）
 //.itemLeft { background: rgba(255,0,0,0.1); }
 //.itemCenter { background: rgba(0,255,0,0.1); }
 //.itemRight { background: rgba(0,0,255,0.1); }

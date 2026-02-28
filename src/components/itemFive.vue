@@ -1,11 +1,8 @@
 <template>
     <div>
         <div dv-bg class="item-five-container">
-            <!-- 标题和刷新按钮 -->
+            <!-- 标题（无刷新按钮） -->
             <div class="header">
-                <button class="refresh-btn" @click="refreshAllData">
-                    <span class="refresh-icon">↻</span>
-                </button>
                 <h2>实时内容展示</h2>
             </div>
 
@@ -15,7 +12,7 @@
                     v-for="item in gaugeList"
                     :key="item.id"
                     class="data-card"
-                    :style="{ backgroundColor: item.color + '20' }"
+                    :style="{ backgroundColor: item.bgColor + '20' }"
                 >
                     <div class="card-name">{{ item.name }}</div>
                     <div class="card-value" :style="{ color: item.color }">
@@ -28,16 +25,70 @@
 </template>
 
 <script setup>
-import { ref, onMounted} from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 // 六个数据项配置
 const gaugeList = ref([
-    { id: 'temp', name: '温度', unit: '℃', value: 0, min: 15, max: 25, color: '#ff6b6b' },
-    { id: 'salinity', name: '盐度', unit: 'PSU', value: 0, min: 28, max: 35, color: '#4dabf7' },
-    { id: 'flow', name: '流速', unit: 'm/s', value: 0, min: 0, max: 2.0, color: '#51cf66' },
-    { id: 'wind', name: '风速', unit: 'm/s', value: 0, min: 0, max: 15, color: '#ffd43b' },
-    { id: 'wave', name: '波高', unit: 'm', value: 0, min: 0, max: 5, color: '#339af0' },
-    { id: 'eddy', name: '涡旋', unit: '个', value: 0, min: 0, max: 30, color: '#ae3ec9' }
+    { 
+        id: 'temp', 
+        name: '温度', 
+        unit: '℃', 
+        value: 0, 
+        min: 15, 
+        max: 25, 
+        color: '#ff6b6b',        // 字体颜色
+        bgColor: '#ff6b6b'        // 背景颜色（加20透明度）
+    },
+    { 
+        id: 'salinity', 
+        name: '盐度', 
+        unit: 'PSU', 
+        value: 0, 
+        min: 28, 
+        max: 35, 
+        color: '#4dabf7',
+        bgColor: '#4dabf7'
+    },
+    { 
+        id: 'flow', 
+        name: '流速', 
+        unit: 'm/s', 
+        value: 0, 
+        min: 0, 
+        max: 2.0, 
+        color: '#51cf66',
+        bgColor: '#51cf66'
+    },
+    { 
+        id: 'wind', 
+        name: '风速', 
+        unit: 'm/s', 
+        value: 0, 
+        min: 0, 
+        max: 15, 
+        color: '#ae3ec9',        // 字体颜色改为紫色
+        bgColor: '#ffd43b'        // 背景保持黄色
+    },
+    { 
+        id: 'wave', 
+        name: '波高', 
+        unit: 'm', 
+        value: 0, 
+        min: 0, 
+        max: 5, 
+        color: '#339af0',
+        bgColor: '#339af0'
+    },
+    { 
+        id: 'eddy', 
+        name: '涡旋', 
+        unit: '个', 
+        value: 0, 
+        min: 0, 
+        max: 30, 
+        color: '#ffd43b',        // 字体颜色改为黄色
+        bgColor: '#ae3ec9'        // 背景保持紫色
+    }
 ]);
 
 // 生成随机值
@@ -52,9 +103,23 @@ const refreshAllData = () => {
     });
 };
 
-// 初始数据
+let timer = null;
+
+// 初始数据并启动定时器
 onMounted(() => {
     refreshAllData();
+    // 每5秒自动刷新
+    timer = setInterval(() => {
+        refreshAllData();
+    }, 5000);
+});
+
+// 组件卸载时清除定时器
+onUnmounted(() => {
+    if (timer) {
+        clearInterval(timer);
+        timer = null;
+    }
 });
 </script>
 
@@ -71,53 +136,22 @@ onMounted(() => {
 .header {
     display: flex;
     align-items: center;
-    height: 40px; /* 固定高度，与之前比例一致 */
+    justify-content: center; /* 标题居中 */
+    height: 40px;
     padding: 0 10px;
     flex-shrink: 0;
 }
 
-.refresh-btn {
-    background: transparent;
-    border: none;
-    color: #00f2fe;
-    font-size: 24px;
-    cursor: pointer;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s;
-    margin-right: 5px;
-}
-
-.refresh-btn:hover {
-    background: rgba(0, 242, 254, 0.2);
-    transform: rotate(30deg);
-}
-
+/* 标题样式优化 */
 .header h2 {
     color: white;
     margin: 0;
-}
-
-.refresh-icon {
-    display: inline-block;
-    transition: transform 0.3s;
-}
-
-.refresh-btn:hover .refresh-icon {
-    transform: rotate(180deg);
-}
-
-h2 {
-    color: #cd1a;
-    line-height: 36px;
-    font-size: 14px;
-    margin: 0;
-    text-align: center;
-    flex: 1;
+    font-size: 20px;
+    font-weight: 500;
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+    line-height: 40px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 /* 卡片网格：上三下三 */

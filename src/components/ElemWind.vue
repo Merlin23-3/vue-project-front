@@ -70,19 +70,19 @@ const initChart = () => {
                 name: '渤海',
                 type: 'bar',
                 data: [5.8, 4.5, 6.2, 8.5],
-                itemStyle: { color: '#4dabf7' },
+                itemStyle: { color: '#FFD700' },
                 barWidth: '15%'
             }, {
                 name: '黄海北部',
                 type: 'bar',
                 data: [6.2, 4.8, 6.8, 9.2],
-                itemStyle: { color: '#3bc9db' },
+                itemStyle: { color: '#FFA500' },
                 barWidth: '15%'
             }, {
                 name: '黄海南部',
                 type: 'bar',
                 data: [6.5, 5.2, 7.2, 9.8],
-                itemStyle: { color: '#69db7e' },
+                itemStyle: { color: '#FF6347' },
                 barWidth: '15%'
             }]
         })
