@@ -69,6 +69,16 @@ const initChart = () => {
             series: [{
                 type: 'graph',
                 layout: 'force',
+                // 强制视图居中，禁止缩放平移，防止节点超出容器
+                roam: false,
+                // 设置引力中心为容器中心
+                force: {
+                    repulsion: 300,      // 减小斥力，使节点更聚拢
+                    edgeLength: 150,      // 缩短连线长度
+                    gravity: 0.3,         // 增大引力，使节点向中心靠拢
+                    friction: 0.2,
+                    center: ['50%', '50%'] // 引力中心为容器中心
+                },
                 categories: categories,
                 draggable: true,
                 data: [
@@ -79,8 +89,8 @@ const initChart = () => {
                         symbolSize: 40 + weightData.nodes['温度'] * 40,
                         itemStyle: {
                             color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
-                                { offset: 0, color: 'rgba(196,107,47,1)' },    // 中心深橙，不透明
-                                { offset: 1, color: 'rgba(196,107,47,0.2)' }   // 边缘浅橙，半透明
+                                { offset: 0, color: 'rgba(196,107,47,1)' },
+                                { offset: 1, color: 'rgba(196,107,47,0.2)' }
                             ])
                         },
                         label: {
@@ -88,6 +98,7 @@ const initChart = () => {
                             formatter: `温度\n${Math.round(weightData.nodes['温度'] * 100)}%`
                         }
                     },
+                    // ... 其余节点配置保持不变 ...
                     { 
                         name: '盐度', 
                         category: 0,
@@ -95,8 +106,8 @@ const initChart = () => {
                         symbolSize: 40 + weightData.nodes['盐度'] * 40,
                         itemStyle: {
                             color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
-                                { offset: 0, color: 'rgba(15,90,158,1)' },    // 中心深蓝
-                                { offset: 1, color: 'rgba(15,90,158,0.2)' }   // 边缘浅蓝
+                                { offset: 0, color: 'rgba(15,90,158,1)' },
+                                { offset: 1, color: 'rgba(15,90,158,0.2)' }
                             ])
                         },
                         label: {
@@ -111,8 +122,8 @@ const initChart = () => {
                         symbolSize: 40 + weightData.nodes['流速'] * 40,
                         itemStyle: {
                             color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
-                                { offset: 0, color: 'rgba(31,139,31,1)' },    // 中心深绿
-                                { offset: 1, color: 'rgba(31,139,31,0.2)' }   // 边缘浅绿
+                                { offset: 0, color: 'rgba(31,139,31,1)' },
+                                { offset: 1, color: 'rgba(31,139,31,0.2)' }
                             ])
                         },
                         label: {
@@ -127,8 +138,8 @@ const initChart = () => {
                         symbolSize: 40 + weightData.nodes['风速'] * 40,
                         itemStyle: {
                             color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
-                                { offset: 0, color: 'rgba(201,164,0,1)' },    // 中心深金
-                                { offset: 1, color: 'rgba(201,164,0,0.2)' }   // 边缘浅金
+                                { offset: 0, color: 'rgba(201,164,0,1)' },
+                                { offset: 1, color: 'rgba(201,164,0,0.2)' }
                             ])
                         },
                         label: {
@@ -143,8 +154,8 @@ const initChart = () => {
                         symbolSize: 40 + weightData.nodes['波高'] * 40,
                         itemStyle: {
                             color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
-                                { offset: 0, color: 'rgba(39,155,143,1)' },   // 中心深青
-                                { offset: 1, color: 'rgba(39,155,143,0.2)' }  // 边缘浅青
+                                { offset: 0, color: 'rgba(39,155,143,1)' },
+                                { offset: 1, color: 'rgba(39,155,143,0.2)' }
                             ])
                         },
                         label: {
@@ -159,8 +170,8 @@ const initChart = () => {
                         symbolSize: 40 + weightData.nodes['涡旋'] * 40,
                         itemStyle: {
                             color: new $echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [
-                                { offset: 0, color: 'rgba(85,26,139,1)' },    // 中心深紫
-                                { offset: 1, color: 'rgba(85,26,139,0.2)' }   // 边缘浅紫
+                                { offset: 0, color: 'rgba(85,26,139,1)' },
+                                { offset: 1, color: 'rgba(85,26,139,0.2)' }
                             ])
                         },
                         label: {
@@ -170,6 +181,7 @@ const initChart = () => {
                     }
                 ],
                 links: [
+                    // ... 连线配置保持不变 ...
                     { 
                         source: '温度', 
                         target: '盐度',
@@ -267,13 +279,8 @@ const initChart = () => {
                         }
                     }
                 ],
-                force: {
-                    repulsion: 500,
-                    edgeLength: 200,
-                    gravity: 0.1,
-                    friction: 0.1
-                },
-                roam: true,
+                // force参数已在上方定义
+             //   roam: false, // 禁止缩放平移，固定视图
                 focusNodeAdjacency: {
                     show: true
                 },
@@ -304,12 +311,11 @@ const initChart = () => {
                     }
                 }
             }],
+            // 工具箱：只保留布局切换按钮
             toolbox: {
                 show: true,
                 feature: {
-                    saveAsImage: { show: true },
-                    restore: { show: true },
-                    magicType: { show: true, type: ['force', 'circular'] }
+                    magicType: { show: true, type: ['force', 'circular'] } // 仅保留力导向/环形布局切换
                 },
                 right: 10,
                 top: 30,
@@ -374,6 +380,7 @@ onUnmounted(() => {
 </script>
 
 <style>
+/* 样式保持不变 */
 .item-wrapper {
     width: 100%;
     height: 100%;

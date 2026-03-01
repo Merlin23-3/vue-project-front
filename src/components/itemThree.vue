@@ -6,10 +6,10 @@
                 <h2>安全预警</h2>
             </div>
 
-            <!-- 下容器：左右分割 1:4 -->
-            <div class="content-split">
-                <!-- 左侧：图例（背景透明） -->
-                <div class="legend-panel">
+            <!-- 主内容区：上下分割 1:6 -->
+            <div class="main-content">
+                <!-- 上容器：横向颜色示例 -->
+                <div class="legend-panel-horizontal">
                     <div class="legend-item">
                         <span class="color-box red"></span>
                         <span class="legend-text">红色预警</span>
@@ -24,8 +24,8 @@
                     </div>
                 </div>
 
-                <!-- 右侧：滚动消息（背景透明，垂直轮播） -->
-                <div class="message-panel">
+                <!-- 下容器：滚动字幕 -->
+                <div class="message-panel" ref="messagePanelRef">
                     <div class="message-list" :style="{ transform: scrollTransform }">
                         <div
                             v-for="(msg, index) in messages"
@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue';
 
 // 模拟消息数据
 const messages = ref([
@@ -63,11 +63,27 @@ const messages = ref([
 const currentIndex = ref(0);
 let timer = null;
 
+// 消息项固定高度（px）
+const itemHeight = 40;
+// 滚动容器高度（动态获取）
+const panelHeight = ref(200); // 默认值，稍后更新
+
+// 获取滚动容器DOM
+const messagePanelRef = ref(null);
+
 // 计算滚动偏移：使当前高亮项始终在容器中央
-// 容器高度 200px，每项高度 40px，中央位置偏移 = (200/2 - 40/2) = 80px
 const scrollTransform = computed(() => {
-    return `translateY(calc(80px - 40px * ${currentIndex.value}))`;
+    // 中央位置偏移 = (panelHeight/2 - itemHeight/2) - itemHeight * currentIndex
+    const offset = (panelHeight.value / 2 - itemHeight / 2) - itemHeight * currentIndex.value;
+    return `translateY(${offset}px)`;
 });
+
+// 更新滚动容器高度
+const updatePanelHeight = () => {
+    if (messagePanelRef.value) {
+        panelHeight.value = messagePanelRef.value.clientHeight;
+    }
+};
 
 // 滚动切换
 const startRolling = () => {
@@ -77,11 +93,18 @@ const startRolling = () => {
 };
 
 onMounted(() => {
+    // 初始获取高度
+    nextTick(() => {
+        updatePanelHeight();
+    });
+    // 监听窗口大小变化，重新计算高度
+    window.addEventListener('resize', updatePanelHeight);
     startRolling();
 });
 
 onUnmounted(() => {
     if (timer) clearInterval(timer);
+    window.removeEventListener('resize', updatePanelHeight);
 });
 </script>
 
@@ -115,29 +138,30 @@ onUnmounted(() => {
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* 下容器：左右分割 1:4 */
-.content-split {
+/* 主内容区：上下分割 1:6 */
+.main-content {
     flex: 1;
     min-height: 0;
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     padding: 8px;
     box-sizing: border-box;
     gap: 8px;
 }
 
-/* 左侧图例面板（背景透明） */
-.legend-panel {
-    flex: 1;
-    min-width: 0;
-    background: transparent;  /* 透明背景 */
+/* 上容器：横向颜色示例 */
+.legend-panel-horizontal {
+    flex: 1; /* 占1份 */
+    min-height: 0;
+    background: transparent;
     border-radius: 8px;
-    padding: 10px;
+    padding: 8px;
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    gap: 20px;
 }
 
 .legend-item {
@@ -171,17 +195,17 @@ onUnmounted(() => {
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 
-/* 右侧消息面板（背景透明，固定高度，溢出隐藏） */
+/* 下容器：滚动消息 */
 .message-panel {
-    flex: 4;
-    min-width: 0;
-    background: transparent;  /* 透明背景 */
+    flex: 6; /* 占6份 */
+    min-height: 0;
+    background: transparent;
     border-radius: 8px;
-    /* 移除内边距，由内部列表控制 */
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    height: 200px;  /* 固定高度，保证滚动计算准确 */
+    padding: 0 10px; /* 左右留白 */
+    box-sizing: border-box;
 }
 
 /* 滚动列表容器 */
@@ -190,7 +214,6 @@ onUnmounted(() => {
     width: 100%;
     transition: transform 0.5s ease;
     will-change: transform;
-    padding: 0 10px;          /* 左右留白，不与边框紧贴 */
     box-sizing: border-box;
 }
 
