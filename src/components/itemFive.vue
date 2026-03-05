@@ -3,7 +3,7 @@
         <div dv-bg class="item-five-container">
             <!-- 标题（无刷新按钮） -->
             <div class="header">
-                <h2>实时内容展示</h2>
+                <h2 class="artistic-title">实时内容展示</h2>  <!-- 使用艺术字体 -->
             </div>
 
             <!-- 六个数据卡片网格 -->
@@ -124,6 +124,24 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* 引入演示秋鸿楷字体 */
+@font-face {
+    font-family: '演示秋鸿楷';
+    src: url('/src/assets/fonts/演示秋鸿楷.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 如果字体文件在public目录下，使用这个路径 */
+/* @font-face {
+    font-family: '演示秋鸿楷';
+    src: url('/fonts/演示秋鸿楷.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+} */
+
 .item-five-container {
     height: 100%;
     display: flex;
@@ -142,16 +160,18 @@ onUnmounted(() => {
     flex-shrink: 0;
 }
 
-/* 标题样式优化 */
-.header h2 {
+/* 标题艺术字体样式 - 秋鸿楷 */
+.artistic-title {
     color: white;
     margin: 0;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 500;
-    font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+    font-family: '演示秋鸿楷', '华文楷体', 'KaiTi', '楷体', 'PingFang SC', 'Microsoft YaHei', serif;
     line-height: 40px;
-    letter-spacing: 1px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0, 242, 254, 0.4);
+    transform: scaleY(1.05);
+    display: inline-block;
 }
 
 /* 卡片网格：上三下三 */

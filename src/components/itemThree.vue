@@ -1,14 +1,14 @@
 <template>
     <div>
         <div dv-bg class="item-five-container">
-            <!-- 标题区域（上） -->
+            <!-- 标题区域（上）- 使用艺术字体 -->
             <div class="header">
-                <h2>安全预警</h2>
+                <h2 class="artistic-title">安全预警</h2>
             </div>
 
-            <!-- 主内容区：上下分割 1:6 -->
+            <!-- 主内容区：上下分割 0.8:6.2（约1:7.75） -->
             <div class="main-content">
-                <!-- 上容器：横向颜色示例 -->
+                <!-- 上容器：横向颜色示例（占比调小） -->
                 <div class="legend-panel-horizontal">
                     <div class="legend-item">
                         <span class="color-box red"></span>
@@ -24,7 +24,7 @@
                     </div>
                 </div>
 
-                <!-- 下容器：滚动字幕 -->
+                <!-- 下容器：滚动字幕（占比增大） -->
                 <div class="message-panel" ref="messagePanelRef">
                     <div class="message-list" :style="{ transform: scrollTransform }">
                         <div
@@ -52,12 +52,12 @@ import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue';
 
 // 模拟消息数据
 const messages = ref([
-    { text: '红色预警：台风“鲇鱼”即将登陆', type: 'red' },
-    { text: '黄色预警：海浪高度超过2.5米', type: 'yellow' },
-    { text: '一切正常：当前海域无异常', type: 'green' },
-    { text: '黄色预警：风速超过12m/s', type: 'yellow' },
-    { text: '红色预警：巨浪红色警报', type: 'red' },
-    { text: '一切正常：所有监测指标正常', type: 'green' }
+    { text: '台风“鲇鱼”即将登陆', type: 'red' },
+    { text: '海浪高度超过2.5米', type: 'yellow' },
+    { text: '当前海域无异常', type: 'green' },
+    { text: '风速超过12m/s', type: 'yellow' },
+    { text: '巨浪红色警报', type: 'red' },
+    { text: '所有监测指标正常', type: 'green' }
 ]);
 
 const currentIndex = ref(0);
@@ -109,6 +109,15 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* 引入演示秋鸿楷字体（和实时内容展示保持一致） */
+@font-face {
+    font-family: '演示秋鸿楷';
+    src: url('/src/assets/fonts/演示秋鸿楷.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 .item-five-container {
     height: 100%;
     display: flex;
@@ -127,53 +136,57 @@ onUnmounted(() => {
     flex-shrink: 0;
 }
 
-.header h2 {
+/* 标题艺术字体样式 - 和实时内容展示完全一致 */
+.artistic-title {
     color: white;
     margin: 0;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 500;
-    font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+    font-family: '演示秋鸿楷', '华文楷体', 'KaiTi', '楷体', 'PingFang SC', 'Microsoft YaHei', serif;
     line-height: 40px;
-    letter-spacing: 1px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0, 242, 254, 0.4);
+    transform: scaleY(1.05);
+    display: inline-block;
 }
 
-/* 主内容区：上下分割 1:6 */
+/* 主内容区：上下分割 0.8:6.2（上容器占比调小） */
 .main-content {
     flex: 1;
     min-height: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 8px;
+    padding: 6px 8px;  /* 上下内边距从8px减到6px */
     box-sizing: border-box;
-    gap: 8px;
+    gap: 6px;  /* 间距从8px减到6px */
 }
 
-/* 上容器：横向颜色示例 */
+/* 上容器：横向颜色示例（占比调小） */
 .legend-panel-horizontal {
-    flex: 1; /* 占1份 */
+    flex: 0.8; /* 从1减到0.8，占更小比例 */
     min-height: 0;
     background: transparent;
     border-radius: 8px;
-    padding: 8px;
+    padding: 4px 8px;  /* 上下内边距从8px减到4px */
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
-    gap: 20px;
+    gap: 15px;  /* 间距从20px减到15px */
 }
 
 .legend-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;  /* 图标和文字间距从10px减到6px */
 }
 
+/* 颜色框改为3:1矩形（宽24px，高8px） */
 .color-box {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
+    width: 24px;    /* 宽度保持24px */
+    height: 8px;    /* 高度从24px减到8px，形成3:1扁平矩形 */
+    border-radius: 2px;  /* 稍微圆角更精致 */
 }
 
 .color-box.red {
@@ -191,20 +204,20 @@ onUnmounted(() => {
 
 .legend-text {
     color: white;
-    font-size: 16px;
+    font-size: 15px;  /* 字号从16px稍微调小到15px */
     font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 
-/* 下容器：滚动消息 */
+/* 下容器：滚动消息（占比相应增大） */
 .message-panel {
-    flex: 6; /* 占6份 */
+    flex: 6.2; /* 从6增加到6.2，保持总份数7不变（0.8+6.2=7） */
     min-height: 0;
     background: transparent;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 0 10px; /* 左右留白 */
+    padding: 0 10px;
     box-sizing: border-box;
 }
 

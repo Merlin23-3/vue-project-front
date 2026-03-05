@@ -1,7 +1,7 @@
 <!-- eslint-disable -->
 <template>
     <div class="chart-wrapper">
-        <h3>盐度分布</h3>
+        <h3 class="artistic-title">盐度分布</h3>
         <div class="chart" :id="chartId"></div>
     </div>
 </template>
@@ -29,14 +29,13 @@ const initChart = () => {
         myChart = $echarts.init(chartDom)
         myChart.setOption({
             title: {
-             //   text: '盐度时空分布',
                 left: 'center',
                 textStyle: { color: '#fff', fontSize: 12 }
             },
             grid: {
-                top: '18%',
-                left: '12%',
-                right: '8%',
+                top: '12%',
+                left: '8%',
+                right: '15%',
                 bottom: '12%',
                 containLabel: true
             },
@@ -50,9 +49,12 @@ const initChart = () => {
             },
             legend: {
                 textStyle: { color: '#fff' },
-                top: 25,
+                top: 'center',
+                right: '0',
+                orient: 'vertical',
                 itemWidth: 12,
-                itemHeight: 8
+                itemHeight: 8,
+                itemGap: 15
             },
             xAxis: {
                 type: 'category',
@@ -78,12 +80,12 @@ const initChart = () => {
                 type: 'bar',
                 data: [29.5, 31.2, 32.8, 33.5, 34.2],
                 itemStyle: {
-    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
-        { offset: 0, color: '#FF9A3C' },  // 亮橙
-        { offset: 1, color: '#C44536' }   // 砖红
-    ]),
-    borderRadius: [4, 4, 0, 0]
-},
+                    color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#FF9A3C' },
+                        { offset: 1, color: '#C44536' }
+                    ]),
+                    borderRadius: [4, 4, 0, 0]
+                },
                 barWidth: '40%',
                 label: {
                     show: true,
@@ -107,7 +109,6 @@ const handleResize = () => {
     }
 }
 
-// ResizeObserver 监听容器尺寸变化
 let resizeObserver = null
 
 const observeContainer = () => {
@@ -158,24 +159,41 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+@font-face {
+    font-family: '演示秋鸿楷';
+    src: url('/src/assets/fonts/演示秋鸿楷.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 .chart-wrapper {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
-h3 {
-    color: #fff;
+.artistic-title {
+    color: white;
     text-align: center;
-    margin: 2px 0;
-    font-size: 14px;
-    flex-shrink: 0;
+    margin: 4px 0 2px 0;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: '演示秋鸿楷', '华文楷体', 'KaiTi', '楷体', 'PingFang SC', 'Microsoft YaHei', serif;
+    line-height: 1.3;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0, 242, 254, 0.4);
+    transform: scaleY(1.05);
+    display: inline-block;
+    width: 100%;
 }
 
 .chart {
     flex: 1;
     width: 100%;
     min-height: 0;
+    height: calc(100% - 28px);
 }
 </style>

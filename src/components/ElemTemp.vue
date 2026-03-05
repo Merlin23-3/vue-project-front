@@ -1,7 +1,7 @@
 <!-- eslint-disable -->
 <template>
     <div class="chart-wrapper">
-        <h3>温度分布</h3>
+        <h3 class="artistic-title">温度分布</h3>
         <div class="chart" :id="chartId"></div>
     </div>
 </template>
@@ -33,9 +33,9 @@ const initChart = () => {
                 textStyle: { color: '#fff', fontSize: 12 }
             },
             grid: {
-                top: '15%',
-                left: '8%',
-                right: '5%',
+                top: '12%',
+                left: '8%',       // 左侧恢复较小值
+                right: '15%',      // 右侧增加留白给图例
                 bottom: '12%',
                 containLabel: true
             },
@@ -52,11 +52,15 @@ const initChart = () => {
             },
             legend: {
                 textStyle: { color: '#fff' },
-                top: 25,
+                top: 'center',        // 垂直居中
+                right: '0',            // 靠右对齐
+                orient: 'vertical',    // 纵向排布
                 itemWidth: 12,
                 itemHeight: 8,
-                orient: 'horizontal',
-                left: 'center'
+                itemGap: 15,          // 图例项间距
+                borderColor: 'rgba(255,255,255,0.2)',
+                borderWidth: 0,
+                backgroundColor: 'transparent'
             },
             xAxis: {
                 type: 'category',
@@ -164,6 +168,15 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* 引入演示秋鸿楷字体 */
+@font-face {
+    font-family: '演示秋鸿楷';
+    src: url('/src/assets/fonts/演示秋鸿楷.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 .chart-wrapper {
     width: 100%;
     height: 100%;
@@ -172,18 +185,26 @@ onUnmounted(() => {
     box-sizing: border-box;
 }
 
-h3 {
-    color: #fff;
+/* 艺术字体标题 - 与实时内容展示一致 */
+.artistic-title {
+    color: white;
     text-align: center;
-    margin: 2px 0;
-    font-size: 14px;
-    flex-shrink: 0;
+    margin: 4px 0 2px 0;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: '演示秋鸿楷', '华文楷体', 'KaiTi', '楷体', 'PingFang SC', 'Microsoft YaHei', serif;
+    line-height: 1.3;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0, 242, 254, 0.4);
+    transform: scaleY(1.05);
+    display: inline-block;
+    width: 100%;
 }
 
 .chart {
     flex: 1;
     width: 100%;
     min-height: 0;
-    height: calc(100% - 18px);
+    height: calc(100% - 28px);  /* 减去标题高度 */
 }
 </style>
