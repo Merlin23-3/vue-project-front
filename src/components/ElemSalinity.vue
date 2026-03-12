@@ -73,7 +73,9 @@ const initChart = () => {
                 axisLabel: { color: '#fff', fontSize: 9 },
                 splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } },
                 min: 28,
-                max: 35
+                max: 35,
+                nameLocation: 'middle',
+                nameGap: 30
             },
             series: [{
                 name: '表层盐度',
@@ -178,8 +180,8 @@ onUnmounted(() => {
 .artistic-title {
     color: white;
     text-align: center;
-    margin: 4px 0 2px 0;
-    font-size: 18px;
+    margin: -1px 0 2px 0;
+    font-size: 23px;
     font-weight: 500;
     font-family: '演示秋鸿楷', '华文楷体', 'KaiTi', '楷体', 'PingFang SC', 'Microsoft YaHei', serif;
     line-height: 1.3;
@@ -194,6 +196,6 @@ onUnmounted(() => {
     flex: 1;
     width: 100%;
     min-height: 0;
-    height: calc(100% - 28px);
+    height: calc(100% - 33px);
 }
 </style>

@@ -189,8 +189,8 @@ onUnmounted(() => {
 .artistic-title {
     color: white;
     text-align: center;
-    margin: 4px 0 2px 0;
-    font-size: 18px;
+    margin: -1px 0 2px 0;  /* 上边距从4px改为-1px，整体向上位移5px */
+    font-size: 23px;        /* 从18px增加到23px，放大5px */
     font-weight: 500;
     font-family: '演示秋鸿楷', '华文楷体', 'KaiTi', '楷体', 'PingFang SC', 'Microsoft YaHei', serif;
     line-height: 1.3;
@@ -205,6 +205,6 @@ onUnmounted(() => {
     flex: 1;
     width: 100%;
     min-height: 0;
-    height: calc(100% - 28px);  /* 减去标题高度 */
+    height: calc(100% - 33px);  /* 从28px调整为33px，适应标题高度变化 */
 }
 </style>

@@ -2,7 +2,7 @@
     <div class="item-six-wrapper">
         <div dv-bg class="item-six-container">
             <div class="header">
-                <h2>智能分析反馈</h2>
+                <h2 class="artistic-title">智能分析反馈</h2>
                 <!-- 右下角角标 -->
                 <div class="corner-mark" @click="openModal">
                     <span class="expand-icon">⤢</span>
@@ -93,15 +93,28 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* 引入演示秋鸿楷字体 */
+@font-face {
+    font-family: '演示秋鸿楷';
+    src: url('/src/assets/fonts/演示秋鸿楷.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 如果字体文件在public目录下，使用这个路径 */
+/* @font-face {
+    font-family: '演示秋鸿楷';
+    src: url('/fonts/演示秋鸿楷.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+} */
+
 .item-six-wrapper {
     width: 100%;
     height: 100%;
     position: relative;
-}
-
-.header h2 {
-    color: white;
-    margin: 0;
 }
 
 .item-six-container {
@@ -114,23 +127,32 @@ onUnmounted(() => {
 }
 
 .header {
-    position: relative;
-    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 10px;
     flex-shrink: 0;
-    margin-bottom: 2px;
+    position: relative;
 }
 
-h2 {
-    color: #cd1a;
-    line-height: 24px;
-    text-align: center;
-    font-size: 14px;
+/* 标题艺术字体样式 - 秋鸿楷 (完全模仿itemFive) */
+.artistic-title {
+    color: white;
     margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+    font-family: '演示秋鸿楷', '华文楷体', 'KaiTi', '楷体', 'PingFang SC', 'Microsoft YaHei', serif;
+    line-height: 40px;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0, 242, 254, 0.4);
+    transform: scaleY(1.05);
+    display: inline-block;
 }
 
 .corner-mark {
     position: absolute;
-    bottom: -2px;
+    bottom: 8px;
     right: 2px;
     width: 22px;
     height: 22px;
