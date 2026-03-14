@@ -1,137 +1,216 @@
 <template>
     <div class="item-wrapper">
-            <div dv-bg class="item-content" style="width: 100%; height: 100%;">
-                <div class="chart" id="onechart"></div>
+        <div dv-bg class="item-content" style="width: 100%; height: 100%;">
+            <!-- 添加标题 -->
+            <div class="header">
+                <h2 class="artistic-title">要素对比</h2>
             </div>
+            <div ref="chartRef" class="chart"></div>
+        </div>
     </div>
 </template>
 
 <script setup lang="js">
-import { inject, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import * as echarts from 'echarts';
 
-let $echarts=inject("echarts")
-let mychart = null
-let resizeObserver = null
+let chartInstance = null
+const chartRef = ref(null)
+
+// 要素名称
+const categories = ['温度', '盐度', '流速', '风速', '波高', '涡旋'];
+
+// 当前数据
+const currentData = [22.5, 32.8, 1.25, 8.5, 2.3, 18];
+// 预测数据
+const predictData = [24.8, 33.2, 1.45, 12.5, 3.1, 22];
+
+// 计算每个要素的当前数据占比（基于当前+预测的总和）
+const currentPercent = currentData.map((value, index) => {
+    const total = value + predictData[index];
+    return Number(((value / total) * 100).toFixed(1));
+});
+
+// 计算每个要素的预测数据占比（基于当前+预测的总和）
+const predictPercent = predictData.map((value, index) => {
+    const total = value + currentData[index];
+    return Number(((value / total) * 100).toFixed(1));
+});
 
 const initChart = () => {
-   const chartDom = document.getElementById("onechart")
-   if (!chartDom || !chartDom.parentElement) return
-   
-   const { width, height } = chartDom.parentElement.getBoundingClientRect()
-   if (width === 0 || height === 0) return
-   
-   if (mychart) {
-       mychart.dispose()
-   }
-   
-   mychart= $echarts.init(chartDom)
-   mychart.setOption({
-    title: {
-        // text: '涡旋数量分布',
-       // text:"实时数据展示",
-        left: 'center',
-        textStyle: { color: '#fff', fontSize: 12 }
-    },
-
-    grid:{
-        top:"15%",
-        left:"1%",
-        right:"6%",
-        bottom:"3%",
-        containLabel:true
-    },
- 
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      type: 'shadow'
+    if (!chartRef.value) return
+    
+    // 创建ECharts实例
+    chartInstance = echarts.init(chartRef.value)
+    
+    const option = {
+        title: {
+            left: 'center',
+            textStyle: { color: '#fff', fontSize: 12 }
+        },
+        // 图例 - 只保留当前数据和预测数据
+        legend: {
+            data: ['当前数据', '预测数据'],
+            textStyle: { color: '#fff' },
+            top: 20,
+            itemWidth: 12,
+            itemHeight: 8,
+            orient: 'horizontal',
+            left: 'center'
+        },
+        // 网格配置
+        grid: {
+            left: '15%',
+            right: '10%',
+            top: '20%',
+            bottom: '5%',
+            containLabel: true
+        },
+        // 工具提示
+        tooltip: {
+            trigger: 'item',
+            formatter: function(params) {
+                const index = params.dataIndex;
+                const category = categories[index];
+                const currentVal = currentData[index].toFixed(1);
+                const predictVal = predictData[index].toFixed(1);
+                const currentPct = currentPercent[index];
+                const predictPct = predictPercent[index];
+                const unit = index === 0 ? '℃' : 
+                            index === 1 ? 'PSU' : 
+                            index === 2 ? 'm/s' : 
+                            index === 3 ? 'm/s' : 
+                            index === 4 ? 'm' : '个';
+                
+                if (params.seriesName === '当前数据') {
+                    return `${category}<br/>当前: ${currentVal}${unit} (${currentPct}%)`;
+                } else {
+                    return `${category}<br/>预测: ${predictVal}${unit} (${predictPct}%)`;
+                }
+            }
+        },
+        // X轴（数值轴）
+        xAxis: {
+            type: 'value',
+            min: 0,
+            max: 100,
+            axisLabel: {
+                color: '#fff',
+                formatter: '{value}%'
+            },
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: 'rgba(255,255,255,0.1)'
+                }
+            },
+            axisLine: { lineStyle: { color: '#00f2fe' } }
+        },
+        // Y轴（分类轴）
+        yAxis: {
+            type: 'category',
+            data: categories,
+            axisLabel: { 
+                color: '#fff',
+                fontSize: 12,
+                fontWeight: 'bold'
+            },
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { show: false }
+        },
+        // 系列数据：堆叠条形图
+        series: [
+            {
+                name: '当前数据',
+                type: 'bar',
+                stack: 'total',
+                data: currentPercent,
+                barWidth: 20,
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                        { offset: 0, color: '#00f2fe' },
+                        { offset: 1, color: '#4dabf7' }
+                    ]),
+                    borderRadius: [4, 0, 0, 4]
+                },
+                label: {
+                    show: true,
+                    position: 'insideLeft',
+                    color: '#fff',
+                    fontSize: 11,
+                    fontWeight: 'bold',
+                    formatter: function(params) {
+                        return params.value > 5 ? `${params.value}%` : '';
+                    }
+                }
+            },
+            {
+                name: '预测数据',
+                type: 'bar',
+                stack: 'total',
+                data: predictPercent,
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                        { offset: 0, color: '#ff6b6b' },
+                        { offset: 1, color: '#ffa726' }
+                    ]),
+                    borderRadius: [0, 4, 4, 0]
+                },
+                label: {
+                    show: true,
+                    position: 'insideRight',
+                    color: '#fff',
+                    fontSize: 11,
+                    fontWeight: 'bold',
+                    formatter: function(params) {
+                        return params.value > 5 ? `${params.value}%` : '';
+                    }
+                }
+            }
+        ]
     }
-   },
-    xAxis:{
-        type:"value",
-        boundaryGap: [0, 0.01]       
-    },
-    yAxis:{
-        type:"category",
-        data: ['项目一', '项目二', '项目三', '项目四', '项目五', '项目六']
 
-    },
-    series: [
-{
-name: '2011',
-type: 'bar',
-itemStyle: {
-normal: {
-    barBorderRadius:[0,20,20,0],
-color: new $echarts.graphic.LinearGradient(0, 0, 1, 0, [
-    { offset: 0, color: '#00f2fe' },      // 亮青蓝色
-    { offset: 0.5, color: '#00ffea' },    // 亮青色
-    { offset: 1, color: '#00ffaa' }       // 亮青绿色
-])
+    // 设置配置项并渲染
+    chartInstance.setOption(option)
+    
+    // 自适应窗口大小
+    window.addEventListener('resize', handleResize)
 }
-},
-data: [1823, 2489, 2034, 10970, 13144, 43230]
-},
-{
-name: '2012',
-type: 'bar',
-itemStyle: {
-normal: {
-    barBorderRadius:[0,20,20,0],
-color: new $echarts.graphic.LinearGradient(0, 0, 1, 0, [
-    { offset: 0, color: '#ff6b6b' },      // 亮橙红色
-    { offset: 0.5, color: '#ffa726' },    // 亮橙色
-    { offset: 1, color: '#ffeb3b' }       // 亮黄色
-])
-}
-},
-data: [9325, 2438, 3100, 12594, 14141, 38807]
-}
-]
 
-   })
+const handleResize = () => {
+    if (chartInstance) {
+        chartInstance.resize()
+    }
 }
 
 onMounted(() => {
     setTimeout(() => {
-        const chartDom = document.getElementById("onechart")
-        if (chartDom && chartDom.parentElement) {
-            const { width, height } = chartDom.parentElement.getBoundingClientRect()
-            if (width > 0 && height > 0) {
-                initChart()
-            }
-        }
-        
-        // 使用 ResizeObserver 监听容器尺寸变化
-        if (chartDom && chartDom.parentElement) {
-            resizeObserver = new ResizeObserver((entries) => {
-                for (const entry of entries) {
-                    const { width, height } = entry.contentRect
-                    if (width > 0 && height > 0) {
-                        if (!mychart) {
-                            initChart()
-                        } else {
-                            mychart.resize()
-                        }
-                    }
-                }
-            })
-            resizeObserver.observe(chartDom.parentElement)
+        if (chartRef.value) {
+            initChart()
         }
     }, 100)
 })
 
 onUnmounted(() => {
-    if (resizeObserver) {
-        resizeObserver.disconnect()
-    }
-    if (mychart) {
-        mychart.dispose()
+    window.removeEventListener('resize', handleResize)
+    if (chartInstance) {
+        chartInstance.dispose()
+        chartInstance = null
     }
 })
 </script>
 
 <style>
+/* 引入演示秋鸿楷字体 */
+@font-face {
+    font-family: '演示秋鸿楷';
+    src: url('/src/assets/fonts/演示秋鸿楷.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 .item-wrapper {
     width: 100%;
     height: 100%;
@@ -152,6 +231,32 @@ onUnmounted(() => {
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 标题区域 */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 10px;
+    flex-shrink: 0;
+}
+
+/* 标题艺术字体样式 - 秋鸿楷 */
+.artistic-title {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+    font-family: '演示秋鸿楷', '华文楷体', 'KaiTi', '楷体', 'PingFang SC', 'Microsoft YaHei', serif;
+    line-height: 40px;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0, 242, 254, 0.4);
+    transform: scaleY(1.05);
+    display: inline-block;
 }
 
 .chart {
@@ -159,14 +264,4 @@ onUnmounted(() => {
     min-height: 0;
     width: 100%;
 }
-
-h2 {
-    height: 48px;
-    color: #cd1a;
-    line-height: 48px;
-    text-align: center;
-    font-size: 0.3125rem;
-    margin: 0;
-    flex-shrink: 0;
-}
-</style> 
+</style>
