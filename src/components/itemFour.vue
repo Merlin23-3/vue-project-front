@@ -1,10 +1,17 @@
 <template>
     <div class="item-wrapper">
         <div dv-bg class="item-content" style="width: 100%; height: 100%;">
+            <!-- 标题区域 - 与实时内容展示样式一致 -->
+            <div class="header">
+                <h2 class="artistic-title">要素关系图</h2>
+            </div>
+            
+            <!-- 图表区域 - 占据剩余空间 -->
             <div class="chart" id="fourchart"></div>
         </div>
     </div>
 </template>
+
 <script setup lang="js">
 import { inject, onMounted, onUnmounted } from 'vue';
 
@@ -98,7 +105,6 @@ const initChart = () => {
                             formatter: `温度\n${Math.round(weightData.nodes['温度'] * 100)}%`
                         }
                     },
-                    // ... 其余节点配置保持不变 ...
                     { 
                         name: '盐度', 
                         category: 0,
@@ -181,7 +187,6 @@ const initChart = () => {
                     }
                 ],
                 links: [
-                    // ... 连线配置保持不变 ...
                     { 
                         source: '温度', 
                         target: '盐度',
@@ -279,8 +284,6 @@ const initChart = () => {
                         }
                     }
                 ],
-                // force参数已在上方定义
-             //   roam: false, // 禁止缩放平移，固定视图
                 focusNodeAdjacency: {
                     show: true
                 },
@@ -380,7 +383,15 @@ onUnmounted(() => {
 </script>
 
 <style>
-/* 样式保持不变 */
+/* 引入演示秋鸿楷字体 */
+@font-face {
+    font-family: '演示秋鸿楷';
+    src: url('/src/assets/fonts/演示秋鸿楷.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 .item-wrapper {
     width: 100%;
     height: 100%;
@@ -401,21 +412,37 @@ onUnmounted(() => {
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 标题区域 - 与实时内容展示完全一致 */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 10px;
+    flex-shrink: 0;
+}
+
+/* 标题艺术字体样式 - 秋鸿楷 */
+.artistic-title {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+    font-family: '演示秋鸿楷', '华文楷体', 'KaiTi', '楷体', 'PingFang SC', 'Microsoft YaHei', serif;
+    line-height: 40px;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0, 242, 254, 0.4);
+    transform: scaleY(1.05);
+    display: inline-block;
 }
 
 .chart {
     flex: 1;
     min-height: 0;
     width: 100%;
-}
-
-h2 {
-    height: 48px;
-    color: #cd1a;
-    line-height: 48px;
-    text-align: center;
-    font-size: 0.3125rem;
-    margin: 0;
-    flex-shrink: 0;
 }
 </style>

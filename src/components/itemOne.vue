@@ -5,37 +5,108 @@
             <div class="header">
                 <h2 class="artistic-title">要素对比</h2>
             </div>
-            <div ref="chartRef" class="chart"></div>
+            
+            <!-- 主要内容区：左侧按钮 + 右侧图表 -->
+            <div class="main-content">
+                <!-- 左侧竖状按钮 -->
+                <div class="time-buttons">
+                    <button 
+                        v-for="time in timeOptions" 
+                        :key="time.value"
+                        :class="['time-btn', { active: currentTime === time.value }]"
+                        @click="switchTime(time.value)"
+                    >
+                        {{ time.label }}
+                    </button>
+                </div>
+                
+                <!-- 右侧图表 -->
+                <div ref="chartRef" class="chart"></div>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="js">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import * as echarts from 'echarts';
 
 let chartInstance = null
 const chartRef = ref(null)
 
+// 当前选中的时间周期
+const currentTime = ref(24)
+
+// 时间选项
+const timeOptions = [
+    { label: '6h', value: 6 },
+    { label: '12h', value: 12 },
+    { label: '24h', value: 24 },
+    { label: '36h', value: 36 },
+    { label: '72h', value: 72 }
+]
+
 // 要素名称
 const categories = ['温度', '盐度', '流速', '风速', '波高', '涡旋'];
 
-// 当前数据
-const currentData = [22.5, 32.8, 1.25, 8.5, 2.3, 18];
-// 预测数据
-const predictData = [24.8, 33.2, 1.45, 12.5, 3.1, 22];
+// 基础数据（24小时基准）
+const baseCurrentData = [22.5, 32.8, 1.25, 8.5, 2.3, 18];
+const basePredictData = [24.8, 33.2, 1.45, 12.5, 3.1, 22];
+
+// 根据时间周期计算当前数据和预测数据
+const currentData = computed(() => {
+    return baseCurrentData.map(value => {
+        // 时间越短，数据越接近当前值；时间越长，数据变化越大
+        const factor = 1 + (currentTime.value - 24) * 0.01;
+        return Number((value * factor).toFixed(1));
+    });
+});
+
+const predictData = computed(() => {
+    return basePredictData.map((value) => {
+        // 预测数据随时间变化更明显
+        const factor = 1 + (currentTime.value - 24) * 0.015;
+        return Number((value * factor).toFixed(1));
+    });
+});
 
 // 计算每个要素的当前数据占比（基于当前+预测的总和）
-const currentPercent = currentData.map((value, index) => {
-    const total = value + predictData[index];
-    return Number(((value / total) * 100).toFixed(1));
+const currentPercent = computed(() => {
+    return currentData.value.map((value, index) => {
+        const total = value + predictData.value[index];
+        return Number(((value / total) * 100).toFixed(1));
+    });
 });
 
 // 计算每个要素的预测数据占比（基于当前+预测的总和）
-const predictPercent = predictData.map((value, index) => {
-    const total = value + currentData[index];
-    return Number(((value / total) * 100).toFixed(1));
+const predictPercent = computed(() => {
+    return predictData.value.map((value, index) => {
+        const total = value + currentData.value[index];
+        return Number(((value / total) * 100).toFixed(1));
+    });
 });
+
+// 切换时间周期
+const switchTime = (time) => {
+    currentTime.value = time;
+    updateChart();
+};
+
+// 更新图表数据
+const updateChart = () => {
+    if (!chartInstance) return;
+    
+    chartInstance.setOption({
+        series: [
+            {
+                data: currentPercent.value
+            },
+            {
+                data: predictPercent.value
+            }
+        ]
+    });
+};
 
 const initChart = () => {
     if (!chartRef.value) return
@@ -60,7 +131,7 @@ const initChart = () => {
         },
         // 网格配置
         grid: {
-            left: '15%',
+            left: '10%',
             right: '10%',
             top: '20%',
             bottom: '5%',
@@ -72,10 +143,10 @@ const initChart = () => {
             formatter: function(params) {
                 const index = params.dataIndex;
                 const category = categories[index];
-                const currentVal = currentData[index].toFixed(1);
-                const predictVal = predictData[index].toFixed(1);
-                const currentPct = currentPercent[index];
-                const predictPct = predictPercent[index];
+                const currentVal = currentData.value[index].toFixed(1);
+                const predictVal = predictData.value[index].toFixed(1);
+                const currentPct = currentPercent.value[index];
+                const predictPct = predictPercent.value[index];
                 const unit = index === 0 ? '℃' : 
                             index === 1 ? 'PSU' : 
                             index === 2 ? 'm/s' : 
@@ -125,7 +196,7 @@ const initChart = () => {
                 name: '当前数据',
                 type: 'bar',
                 stack: 'total',
-                data: currentPercent,
+                data: currentPercent.value,
                 barWidth: 20,
                 itemStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
@@ -149,7 +220,7 @@ const initChart = () => {
                 name: '预测数据',
                 type: 'bar',
                 stack: 'total',
-                data: predictPercent,
+                data: predictPercent.value,
                 itemStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
                         { offset: 0, color: '#ff6b6b' },
@@ -257,6 +328,62 @@ onUnmounted(() => {
     text-shadow: 0 2px 8px rgba(0, 242, 254, 0.4);
     transform: scaleY(1.05);
     display: inline-block;
+}
+
+/* 主要内容区：左侧按钮 + 右侧图表 */
+.main-content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+    padding: 0 10px 10px 10px;
+    box-sizing: border-box;
+}
+
+/* 左侧竖状按钮容器 - 纯透明背景 */
+.time-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: auto;
+    min-width: 45px;
+    padding: 6px;
+    background: transparent;  /* 从rgba(0,0,0,0.2)改为transparent */
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* 时间按钮样式 */
+.time-btn {
+    padding: 4px 8px;
+    width: 100%;
+    border: 1px solid #00f2fe;
+    background: transparent;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    min-width: 36px;
+}
+
+.time-btn:hover {
+    background: rgba(0, 242, 254, 0.2);
+    transform: scale(1.02);
+}
+
+.time-btn.active {
+    background: #00f2fe;
+    color: #000;
+    border-color: #fff;
+    box-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
 }
 
 .chart {

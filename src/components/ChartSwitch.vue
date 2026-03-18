@@ -23,9 +23,7 @@ defineProps({
             { id: 'temp', name: '温度' },
             { id: 'salinity', name: '盐度' },
             { id: 'flow', name: '流速' },
-            { id: 'wind', name: '风速' },
-            { id: 'wave', name: '波高' },
-            { id: 'eddy', name: '涡旋' }
+            { id: 'wind', name: '风速' }
         ]
     }
 })
